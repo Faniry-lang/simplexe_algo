@@ -1,6 +1,21 @@
 package utils;
 
 public class Helper {
+
+    public static int MaxPositive(double[] array) {
+        int index = -1;
+        double maxVal = Double.NEGATIVE_INFINITY;
+
+        for(int i = 0; i < array.length; i++) {
+            if(array[i] > maxVal && array[i] > 0) {
+                index = i;
+                maxVal = array[i];
+            }
+        }
+
+        return index;
+    }
+
     public static int Max(double[] array) {
         int index = -1;
         double maxVal = Double.NEGATIVE_INFINITY;
@@ -54,7 +69,6 @@ public class Helper {
         if (hasNegative) return -1;                
         return 0;                                 
     }
-    
 
     public static void Scale(double[] row, double sc) throws Exception {
         if(sc == 0) {

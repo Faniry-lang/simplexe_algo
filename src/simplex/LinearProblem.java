@@ -2,14 +2,15 @@ package simplex;
 
 import utils.Helper;
 
-public class LP {
+public class LinearProblem {
     public String[] variables;
     public double[][] constraints;
-    public double[] rhs;
+    public double[] rhs; 
     public double[] objective;
     public double[] objectiveRhs;
     public String[] basis;
 
+    // une fonction pour afficher le tableau pour le debogage
     private void printTableau() {
         // En-tête
         System.out.print("Base\t| ");
@@ -40,9 +41,11 @@ public class LP {
 
     public void SimplexSolver() throws Exception {
 
+        // ty le boucle
         while(Helper.GetSignOfFunction(objective) >= 0) {
+            printTableau();
             // on prend le max des coefficient des variables de la fonction objective
-            int pivotColIndex = Helper.Max(this.objective);
+            int pivotColIndex = Helper.MaxPositive(this.objective);
             // on construit un vecteur avec les coefficients des fonctions constraintes de la variable du max
             double[] pivotCol = Helper.GetVectorAtCol(pivotColIndex, constraints);
     
@@ -64,7 +67,7 @@ public class LP {
                 }
             }
     
-            // on check si on a bien trouver un pivot positif
+            // on check si on a bien trouver un pivot positif si non on assume que le système n'a pas de solutions
             if (pivot[0] == -1) {
                 throw new Exception("Problem has no bounded solutions");
             }
@@ -76,6 +79,7 @@ public class LP {
             // on remplacera la variable de sortie par la variable avec l'index suivant dans variables[]
             int inVariableIndex = pivotColIndex;
     
+            // Mijery fotsiny sode le miditra ihany no mivoaka
             if(this.basis[outVariableIndex].equals(variables[inVariableIndex])) {
                 throw new Exception("Outgoing variable is equal to incoming variable");
             }
@@ -105,10 +109,14 @@ public class LP {
 
             // on update également la fonction objective
             // pareil pour le second membre de la fonction objective
-            this.objectiveRhs[0] += this.rhs[pivot[0]]*-1 * this.objective[pivot[1]];
-            Helper.AddScale(this.objective, this.constraints[pivot[0]], -1 * this.objective[pivot[1]]);
+            double objScalar = -1 * this.objective[pivot[1]];
+            Helper.AddScale(this.objective, this.constraints[pivot[0]], objScalar);
+            this.objectiveRhs[0] += this.rhs[pivot[0]]*objScalar;
         }
 
+        printTableau();
+
+        // raha minimizer le algo de decommenter-na ty 
         this.objectiveRhs[0] = Math.abs(this.objectiveRhs[0]);
     }
 }
